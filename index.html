@@ -1,0 +1,2655 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cap &amp; Équilibre — Suivi Visuel IG Bas, Poids &amp; Play Club</title>
+  <style>
+    /* =========================================================================
+       VARIABLES & THÈME SOMBRE CHARBON + BLEU VIF (ZÉRO DÉPENDANCE EXTERNE)
+    ========================================================================= */
+    :root {
+      --bg-page: #0F1014;
+      --bg-card: #181A20;
+      --bg-inner: #121419;
+      --bg-hover: #222631;
+      --border: #252932;
+      --border-strong: #343A48;
+
+      --text-main: #F3F4F6;
+      --text-muted: #9CA3AF;
+
+      --blue: #4D8BFF;
+      --blue-hover: #3B7DDD;
+      --blue-soft: rgba(77, 139, 255, 0.16);
+      --blue-border: rgba(77, 139, 255, 0.5);
+
+      --green: #2E9E6B;
+      --green-hover: #38B27A;
+      --green-soft: rgba(46, 158, 107, 0.22);
+
+      --yellow: #D99B26;
+      --yellow-text: #F2B844;
+      --yellow-soft: rgba(217, 155, 38, 0.2);
+
+      --orange: #E06D2B;
+      --orange-text: #F58A4B;
+      --orange-soft: rgba(224, 109, 43, 0.2);
+
+      --red: #D64545;
+      --red-text: #F26B6B;
+      --red-soft: rgba(214, 69, 69, 0.2);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    button, input, select, label, svg {
+      pointer-events: auto;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-size: 17px;
+      line-height: 1.5;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: rgba(77, 139, 255, 0.25);
+    }
+
+    .app-shell {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 20px 16px 64px;
+    }
+
+    @media (min-width: 640px) {
+      .app-shell {
+        padding: 26px 24px 72px;
+      }
+    }
+
+    /* =========================================================================
+       EN-TÊTE MINIMALISTE & BOUTONS AUTO-SAUVEGARDE / EXPORT / IMPORT / RESET
+    ========================================================================= */
+    .header-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .brand-block h1 {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.15;
+      font-weight: 800;
+      color: var(--blue);
+      letter-spacing: -0.02em;
+    }
+
+    .brand-meta {
+      margin: 6px 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+
+    .demo-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      border: 1px solid var(--blue-border);
+      color: var(--blue);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .header-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-header {
+      min-height: 48px;
+      padding: 10px 16px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border-strong);
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .btn-header:hover {
+      background: var(--bg-hover);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .btn-header.btn-export {
+      border-color: var(--blue-border);
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+
+    .btn-header.btn-export:hover {
+      background: var(--blue);
+      color: #0F1014;
+    }
+
+    .btn-header.btn-danger:hover {
+      border-color: var(--red);
+      color: var(--red-text);
+    }
+
+    .autosave-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 46px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-strong);
+      color: var(--text-muted);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .autosave-status .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .autosave-status.is-linked {
+      background: var(--green-soft);
+      border-color: var(--green);
+      color: var(--green-hover);
+    }
+
+    .autosave-status.is-linked .status-dot {
+      background: var(--green-hover);
+    }
+
+    .autosave-status.is-pending {
+      background: var(--yellow-soft);
+      border-color: var(--yellow);
+      color: var(--yellow-text);
+      cursor: pointer;
+    }
+
+    .autosave-status.is-pending .status-dot {
+      background: var(--yellow-text);
+    }
+
+    /* =========================================================================
+       BANDEAU FEEDBACK & MODALE CONFIRMATION
+    ========================================================================= */
+    .toast-bar {
+      display: none;
+      margin-bottom: 20px;
+      padding: 14px 18px;
+      border-radius: 16px;
+      background: var(--blue-soft);
+      border: 1.5px solid var(--blue);
+      color: var(--text-main);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .toast-bar.is-visible {
+      display: block;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(5, 6, 9, 0.78);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.is-open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-strong);
+      border-radius: 22px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-card h3 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .modal-card p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 17px;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    /* =========================================================================
+       GRILLE PRINCIPALE EN 2 COLONNES
+    ========================================================================= */
+    .columns-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 26px;
+      align-items: start;
+    }
+
+    @media (min-width: 1024px) {
+      .columns-grid {
+        grid-template-columns: minmax(0, 1.08fr) minmax(0, 1.18fr);
+      }
+    }
+
+    .col-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .col-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--blue-border);
+    }
+
+    .col-header h2 {
+      margin: 0;
+      font-size: 23px;
+      font-weight: 800;
+      color: var(--blue);
+    }
+
+    .date-pills {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .date-pill-btn {
+      min-height: 44px;
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border-strong);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .date-pill-btn.is-active {
+      background: var(--blue-soft);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    /* =========================================================================
+       CARTES & FORMULAIRES
+    ========================================================================= */
+    .card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: 22px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-top h3 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .pill-info {
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      border: 1px solid var(--blue-border);
+      color: var(--blue);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    /* =========================================================================
+       4 GRANDES PASTILLES COULEUR CÔTE À CÔTE
+    ========================================================================= */
+    .four-pills {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (min-width: 600px) {
+      .four-pills {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    .choice-pill {
+      min-height: 84px;
+      padding: 12px 10px;
+      border-radius: 16px;
+      border: 2px solid var(--border-strong);
+      background: var(--bg-inner);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: transform 0.12s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .choice-pill:hover {
+      transform: translateY(-1px);
+      background: var(--bg-hover);
+    }
+
+    .choice-pill:active {
+      transform: scale(0.98);
+    }
+
+    .choice-pill .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+
+    .choice-pill .label-main {
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.15;
+    }
+
+    .choice-pill .label-sub {
+      font-size: 14px;
+      line-height: 1.25;
+      color: var(--text-muted);
+    }
+
+    /* Vert bien vert (#2E9E6B / #38B27A) */
+    .choice-pill[data-color="vert"] .dot { background: var(--green); }
+    .choice-pill[data-color="vert"]:hover { border-color: var(--green-hover); background: var(--green-soft); }
+    .choice-pill[data-color="vert"].is-selected {
+      background: var(--green);
+      border-color: var(--green-hover);
+      color: #FFFFFF;
+      box-shadow: 0 0 0 3px var(--green-soft);
+    }
+    .choice-pill[data-color="vert"].is-selected .dot { background: #FFFFFF; }
+    .choice-pill[data-color="vert"].is-selected .label-sub { color: rgba(255, 255, 255, 0.92); }
+
+    /* Jaune (#D99B26) */
+    .choice-pill[data-color="jaune"] .dot { background: var(--yellow-text); }
+    .choice-pill[data-color="jaune"]:hover { border-color: var(--yellow-text); background: var(--yellow-soft); }
+    .choice-pill[data-color="jaune"].is-selected {
+      background: var(--yellow);
+      border-color: var(--yellow-text);
+      color: #0F1014;
+      box-shadow: 0 0 0 3px var(--yellow-soft);
+    }
+    .choice-pill[data-color="jaune"].is-selected .dot { background: #0F1014; }
+    .choice-pill[data-color="jaune"].is-selected .label-sub { color: rgba(15, 16, 20, 0.85); }
+
+    /* Orange (#E06D2B) */
+    .choice-pill[data-color="orange"] .dot { background: var(--orange-text); }
+    .choice-pill[data-color="orange"]:hover { border-color: var(--orange-text); background: var(--orange-soft); }
+    .choice-pill[data-color="orange"].is-selected {
+      background: var(--orange);
+      border-color: var(--orange-text);
+      color: #0F1014;
+      box-shadow: 0 0 0 3px var(--orange-soft);
+    }
+    .choice-pill[data-color="orange"].is-selected .dot { background: #0F1014; }
+    .choice-pill[data-color="orange"].is-selected .label-sub { color: rgba(15, 16, 20, 0.85); }
+
+    /* Rouge (#D64545) */
+    .choice-pill[data-color="rouge"] .dot { background: var(--red-text); }
+    .choice-pill[data-color="rouge"]:hover { border-color: var(--red-text); background: var(--red-soft); }
+    .choice-pill[data-color="rouge"].is-selected {
+      background: var(--red);
+      border-color: var(--red-text);
+      color: #FFFFFF;
+      box-shadow: 0 0 0 3px var(--red-soft);
+    }
+    .choice-pill[data-color="rouge"].is-selected .dot { background: #FFFFFF; }
+    .choice-pill[data-color="rouge"].is-selected .label-sub { color: rgba(255, 255, 255, 0.92); }
+
+    /* =========================================================================
+       DERNIÈRES ENTRÉES SOUS CHAQUE CATÉGORIE
+    ========================================================================= */
+    .recent-section {
+      border-top: 1.5px solid var(--border);
+      padding-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .recent-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .recent-items {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .recent-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: var(--bg-inner);
+      border: 1px solid var(--border);
+      font-size: 16px;
+    }
+
+    .badge-color {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .badge-vert { background: var(--green-soft); color: var(--green-hover); border: 1px solid var(--green); }
+    .badge-jaune { background: var(--yellow-soft); color: var(--yellow-text); border: 1px solid var(--yellow); }
+    .badge-orange { background: var(--orange-soft); color: var(--orange-text); border: 1px solid var(--orange); }
+    .badge-rouge { background: var(--red-soft); color: var(--red-text); border: 1px solid var(--red); }
+
+    /* =========================================================================
+       CHAMPS & BOUTONS BLEUS
+    ========================================================================= */
+    .inline-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .input-box {
+      flex: 1 1 170px;
+      min-width: 0;
+      min-height: 50px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border-strong);
+      background: var(--bg-inner);
+      color: var(--text-main);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .select-box {
+      flex: 0 1 185px;
+      min-width: 155px;
+      min-height: 50px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border-strong);
+      background: var(--bg-inner);
+      color: var(--text-main);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .input-box:focus,
+    .select-box:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px var(--blue-soft);
+    }
+
+    .btn-blue {
+      min-height: 50px;
+      padding: 10px 18px;
+      border-radius: 14px;
+      border: 2px solid var(--blue);
+      background: var(--blue);
+      color: #0F1014;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-blue:hover {
+      background: var(--blue-hover);
+      border-color: var(--blue-hover);
+    }
+
+    .btn-outline {
+      min-height: 48px;
+      padding: 10px 16px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border-strong);
+      background: var(--bg-inner);
+      color: var(--text-main);
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: var(--bg-hover);
+    }
+
+    .goals-collapse {
+      background: var(--bg-inner);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+
+    .goals-collapse summary {
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--blue);
+      list-style: none;
+    }
+
+    .goals-collapse summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .goals-grid {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .small-label {
+      display: block;
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    /* =========================================================================
+       CARTE REPAS DE SECOURS & IDÉES CLASSÉES PAR CATÉGORIE
+    ========================================================================= */
+    .cat-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .cat-filter-btn {
+      min-height: 42px;
+      padding: 6px 13px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border-strong);
+      background: var(--bg-inner);
+      color: var(--text-muted);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .cat-filter-btn:hover {
+      border-color: var(--blue);
+      color: var(--text-main);
+    }
+
+    .cat-filter-btn.is-active {
+      background: var(--blue-soft);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .rescue-box {
+      padding: 16px;
+      border-radius: 16px;
+      background: var(--bg-inner);
+      border: 1.5px solid var(--blue-border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .rescue-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cat-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 11px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .cat-secours { background: var(--blue-soft); color: var(--blue); border: 1px solid var(--blue-border); }
+    .cat-feuvert { background: var(--green-soft); color: var(--green-hover); border: 1px solid var(--green); }
+    .cat-ajuster { background: var(--yellow-soft); color: var(--yellow-text); border: 1px solid var(--yellow); }
+    .cat-plaisir { background: var(--orange-soft); color: var(--orange-text); border: 1px solid var(--orange); }
+
+    .rescue-time {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .rescue-name {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .rescue-detail {
+      margin: 0;
+      font-size: 16px;
+      color: var(--text-muted);
+    }
+
+    .custom-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .custom-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 11px;
+      border-radius: 10px;
+      background: var(--bg-inner);
+      border: 1px solid var(--border-strong);
+      font-size: 15px;
+    }
+
+    .custom-tag .tag-cat {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .custom-tag button {
+      background: transparent;
+      border: none;
+      color: var(--red-text);
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      padding: 0 3px;
+    }
+
+    /* =========================================================================
+       COLONNE 2 : RÉSULTATS (3 SÉRIES, TRAJECTOIRE POIDS, SVG, FRISE 10 J)
+    ========================================================================= */
+    .streaks-trio {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    @media (min-width: 640px) {
+      .streaks-trio {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .metric-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .metric-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .metric-number {
+      font-size: 38px;
+      line-height: 1.1;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .metric-sub {
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .weight-stats-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    @media (min-width: 640px) {
+      .weight-stats-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .stat-panel {
+      padding: 16px;
+      border-radius: 16px;
+      background: var(--bg-inner);
+      border: 1.5px solid var(--border-strong);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-panel .big-num {
+      font-size: 36px;
+      line-height: 1.1;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .progress-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 15px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 16px;
+      border-radius: 999px;
+      background: var(--bg-inner);
+      border: 1px solid var(--border-strong);
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue-hover), var(--blue));
+      border-radius: 999px;
+      transition: width 0.35s ease;
+    }
+
+    .svg-container {
+      width: 100%;
+      background: var(--bg-inner);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      padding: 12px;
+      overflow-x: auto;
+    }
+
+    .trend-svg {
+      display: block;
+      width: 100%;
+      min-width: 480px;
+      height: auto;
+    }
+
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .chart-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* =========================================================================
+       FRISE COMPACTE DES 10 DERNIERS JOURS COMBINÉS
+    ========================================================================= */
+    .strip-10 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .strip-10 {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+    }
+
+    .day-tile {
+      padding: 10px 8px;
+      border-radius: 14px;
+      background: var(--bg-inner);
+      border: 1.5px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      text-align: center;
+    }
+
+    .day-tile.is-today {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 2px var(--blue-soft);
+    }
+
+    .tile-date {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .tile-dots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tile-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border-strong);
+      background: transparent;
+    }
+
+    .tile-dot.c-vert { background: var(--green); border-color: var(--green-hover); }
+    .tile-dot.c-jaune { background: var(--yellow); border-color: var(--yellow-text); }
+    .tile-dot.c-orange { background: var(--orange); border-color: var(--orange-text); }
+    .tile-dot.c-rouge { background: var(--red); border-color: var(--red-text); }
+
+    .tile-weight {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--blue);
+      min-height: 20px;
+    }
+  </style>
+    <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0F1014" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- ==================== EN-TÊTE MINIMALISTE ==================== -->
+    <header class="header-bar">
+      <div class="brand-block">
+        <h1>Cap &amp; Équilibre</h1>
+        <div class="brand-meta">
+          <span id="today-date-label"></span>
+          <span id="demo-mode-badge" class="demo-tag" style="display:none;">Données démo 14 j</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <span id="autosave-status-pill" class="autosave-status" onclick="handleAutosaveStatusClick()" title="État de la sauvegarde automatique Chrome">
+          <span class="status-dot"></span>
+          <span id="autosave-status-text">Auto-sauvegarde : inactive</span>
+        </span>
+
+        <button type="button" id="btn-link-autosave" class="btn-header btn-export" onclick="linkAutoBackupFile()">
+          <span>🔄 Lier sauvegarde auto</span>
+        </button>
+
+        <button type="button" class="btn-header" onclick="exportDataJson()">
+          <span>Exporter (JSON)</span>
+        </button>
+
+        <button type="button" class="btn-header" onclick="triggerImportFile()">
+          <span>Importer</span>
+        </button>
+        <input type="file" id="import-file-input" accept=".json,application/json" style="display:none;" onchange="handleImportFile(event)" />
+
+        <button type="button" class="btn-header btn-danger" onclick="openResetModal()">
+          <span>Démarrer à zéro</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Notification visuelle non bloquante -->
+    <div id="toast-bar" class="toast-bar" role="status" aria-live="polite"></div>
+
+    <!-- ==================== DEUX COLONNES PRINCIPALES ==================== -->
+    <main class="columns-grid">
+
+      <!-- ===================================================================
+           COLONNE 1 : 1. SAISIE RAPIDE
+      =================================================================== -->
+      <section class="col-stack" aria-label="1. Saisie rapide">
+        <div class="col-header">
+          <h2>1. Saisie rapide</h2>
+          <div class="date-pills" role="group" aria-label="Jour de saisie">
+            <button type="button" id="pick-today" class="date-pill-btn is-active" onclick="setActiveDateOffset(0)">Aujourd'hui</button>
+            <button type="button" id="pick-yesterday" class="date-pill-btn" onclick="setActiveDateOffset(-1)">Hier</button>
+          </div>
+        </div>
+
+        <!-- CARTE 1 : JOURNÉE • ÉQUILIBRE & ALCOOL -->
+        <article class="card">
+          <div class="card-top">
+            <h3>Journée • Équilibre &amp; Alcool</h3>
+            <span id="day-status-pill" class="pill-info">Aujourd'hui</span>
+          </div>
+
+          <div class="four-pills" role="group" aria-label="Équilibre de la journée">
+            <button type="button" id="btn-day-vert" class="choice-pill" data-color="vert" onclick="recordDayChoice('vert')">
+              <span class="dot"></span>
+              <span class="label-main">Vert</span>
+              <span class="label-sub">Journée équilibrée, sans alcool</span>
+            </button>
+
+            <button type="button" id="btn-day-jaune" class="choice-pill" data-color="jaune" onclick="recordDayChoice('jaune')">
+              <span class="dot"></span>
+              <span class="label-main">Jaune</span>
+              <span class="label-sub">Exception week-end prévue</span>
+            </button>
+
+            <button type="button" id="btn-day-orange" class="choice-pill" data-color="orange" onclick="recordDayChoice('orange')">
+              <span class="dot"></span>
+              <span class="label-main">Orange</span>
+              <span class="label-sub">Petit écart / portions larges</span>
+            </button>
+
+            <button type="button" id="btn-day-rouge" class="choice-pill" data-color="rouge" onclick="recordDayChoice('rouge')">
+              <span class="dot"></span>
+              <span class="label-main">Rouge</span>
+              <span class="label-sub">Gros écart / alcool en semaine</span>
+            </button>
+          </div>
+
+          <div class="recent-section">
+            <h4 class="recent-title">4 dernières entrées</h4>
+            <ul id="recent-day-entries" class="recent-items"></ul>
+          </div>
+        </article>
+
+        <!-- CARTE 2 : SPORT • PLAY CLUB -->
+        <article class="card">
+          <div class="card-top">
+            <h3>Sport • Play Club</h3>
+            <span id="sport-status-pill" class="pill-info">Aujourd'hui</span>
+          </div>
+
+          <div class="four-pills" role="group" aria-label="Séance Play Club">
+            <button type="button" id="btn-sport-vert" class="choice-pill" data-color="vert" onclick="recordSportChoice('vert')">
+              <span class="dot"></span>
+              <span class="label-main">Vert</span>
+              <span class="label-sub">Séance modérée (au top)</span>
+            </button>
+
+            <button type="button" id="btn-sport-jaune" class="choice-pill" data-color="jaune" onclick="recordSportChoice('jaune')">
+              <span class="dot"></span>
+              <span class="label-main">Jaune</span>
+              <span class="label-sub">Séance un peu intense</span>
+            </button>
+
+            <button type="button" id="btn-sport-orange" class="choice-pill" data-color="orange" onclick="recordSportChoice('orange')">
+              <span class="dot"></span>
+              <span class="label-main">Orange</span>
+              <span class="label-sub">Séance trop intense / épuisante</span>
+            </button>
+
+            <button type="button" id="btn-sport-rouge" class="choice-pill" data-color="rouge" onclick="recordSportChoice('rouge')">
+              <span class="dot"></span>
+              <span class="label-main">Rouge</span>
+              <span class="label-sub">Repos / Pas de séance</span>
+            </button>
+          </div>
+
+          <div class="recent-section">
+            <h4 class="recent-title">4 dernières entrées sport</h4>
+            <ul id="recent-sport-entries" class="recent-items"></ul>
+          </div>
+        </article>
+
+        <!-- CARTE 3 : POIDS (KG) -->
+        <article class="card">
+          <div class="card-top">
+            <h3>Poids (kg)</h3>
+            <span id="current-weight-pill" class="pill-info">-- kg</span>
+          </div>
+
+          <form class="inline-row" onsubmit="handleWeightSave(event)">
+            <input
+              type="number"
+              id="weight-field"
+              class="input-box"
+              step="0.1"
+              min="35"
+              max="250"
+              required
+              placeholder="Ex. 74,4"
+              aria-label="Poids en kilogrammes"
+            />
+            <button type="submit" class="btn-blue">Enregistrer</button>
+          </form>
+
+          <details class="goals-collapse">
+            <summary>⚙ Régler poids de départ &amp; objectif</summary>
+            <form class="goals-grid" onsubmit="handleGoalsSave(event)">
+              <div>
+                <label class="small-label" for="goal-start-field">Départ (kg)</label>
+                <input type="number" id="goal-start-field" class="input-box" step="0.1" min="35" max="250" required />
+              </div>
+              <div>
+                <label class="small-label" for="goal-target-field">Objectif (kg)</label>
+                <input type="number" id="goal-target-field" class="input-box" step="0.1" min="35" max="250" required />
+              </div>
+              <div style="grid-column: 1 / -1;">
+                <button type="submit" class="btn-blue" style="width:100%;">Valider les objectifs</button>
+              </div>
+            </form>
+          </details>
+
+          <div class="recent-section">
+            <h4 class="recent-title">4 dernières pesées</h4>
+            <ul id="recent-weight-entries" class="recent-items"></ul>
+          </div>
+        </article>
+
+        <!-- CARTE 4 : REPAS DE SECOURS & IDÉES (TES RECETTES PAR CATÉGORIE) -->
+        <article class="card">
+          <div class="card-top">
+            <h3>Repas de secours &amp; idées</h3>
+            <span id="rescue-index-pill" class="pill-info">1 / 31</span>
+          </div>
+
+          <!-- Filtres par catégorie -->
+          <div class="cat-filters" role="group" aria-label="Filtrer par catégorie de repas">
+            <button type="button" class="cat-filter-btn is-active" data-cat="all" onclick="setRescueCategory('all')">Tout</button>
+            <button type="button" class="cat-filter-btn" data-cat="secours" onclick="setRescueCategory('secours')">Secours express</button>
+            <button type="button" class="cat-filter-btn" data-cat="feuvert" onclick="setRescueCategory('feuvert')">Feu vert</button>
+            <button type="button" class="cat-filter-btn" data-cat="ajuster" onclick="setRescueCategory('ajuster')">À ajuster</button>
+            <button type="button" class="cat-filter-btn" data-cat="plaisir" onclick="setRescueCategory('plaisir')">Plaisir calibré</button>
+            <button type="button" class="cat-filter-btn" data-cat="custom" onclick="setRescueCategory('custom')">Mes idées</button>
+          </div>
+
+          <div class="rescue-box">
+            <div class="rescue-header">
+              <span id="rescue-cat-badge" class="cat-badge cat-secours">Secours express</span>
+              <span id="rescue-time" class="rescue-time">10 min</span>
+            </div>
+            <p id="rescue-title" class="rescue-name"></p>
+            <p id="rescue-desc" class="rescue-detail"></p>
+          </div>
+
+          <button type="button" class="btn-blue" onclick="showNextRescueIdea()">
+            🎲 Piocher
+          </button>
+
+          <form class="inline-row" onsubmit="handleAddCustomRescue(event)">
+            <input
+              type="text"
+              id="custom-rescue-field"
+              class="input-box"
+              placeholder="Ajouter mon idée..."
+              required
+              aria-label="Nouvelle idée de repas"
+            />
+            <select id="custom-rescue-cat" class="select-box" aria-label="Catégorie de l'idée">
+              <option value="secours">Secours express</option>
+              <option value="feuvert">Feu vert</option>
+              <option value="ajuster">À ajuster</option>
+              <option value="plaisir">Plaisir calibré</option>
+            </select>
+            <button type="submit" class="btn-outline">Ajouter</button>
+          </form>
+
+          <div id="custom-rescue-tags" class="custom-tags"></div>
+        </article>
+      </section>
+
+      <!-- ===================================================================
+           COLONNE 2 : 2. RÉSULTATS
+      =================================================================== -->
+      <section class="col-stack" aria-label="2. Résultats">
+        <div class="col-header">
+          <h2>2. Résultats</h2>
+          <span id="adherence-pill" class="pill-info">Régularité 14 j : --</span>
+        </div>
+
+        <!-- TROIS GRANDS COMPTEURS DE SÉRIES -->
+        <div class="streaks-trio">
+          <div class="metric-card">
+            <span class="metric-title">Journées dans le cadre</span>
+            <span id="stat-frame-streak" class="metric-number">0 j</span>
+            <span id="stat-frame-record" class="metric-sub">Record : 0 j (WE Jaune préservé)</span>
+          </div>
+
+          <div class="metric-card">
+            <span class="metric-title">Sans alcool</span>
+            <span id="stat-alcohol-streak" class="metric-number">0 j</span>
+            <span id="stat-alcohol-record" class="metric-sub">Record : 0 j</span>
+          </div>
+
+          <div class="metric-card">
+            <span class="metric-title">Play Club (semaine)</span>
+            <span id="stat-sport-week" class="metric-number">0 / 3</span>
+            <span class="metric-sub">Objectif : 2 à 3 séances modérées</span>
+          </div>
+        </div>
+
+        <!-- BLOC TRAJECTOIRE POIDS -->
+        <article class="card">
+          <div class="card-top">
+            <h3>Trajectoire Poids</h3>
+            <span id="goals-pill" class="pill-info">Départ -- • Cible --</span>
+          </div>
+
+          <div class="weight-stats-row">
+            <div class="stat-panel">
+              <span class="metric-title">Évolution depuis le début</span>
+              <span id="stat-weight-delta" class="big-num">0,0 kg</span>
+              <span id="stat-weight-latest" class="metric-sub">Dernière pesée : --</span>
+            </div>
+
+            <div class="stat-panel">
+              <span class="metric-title">Distance restante</span>
+              <span id="stat-weight-left" class="big-num">0,0 kg</span>
+              <span id="stat-weight-ma7" class="metric-sub">Moyenne lissée 7 j : --</span>
+            </div>
+          </div>
+
+          <div class="progress-wrap">
+            <div class="progress-labels">
+              <span id="progress-start-lbl">Départ</span>
+              <span id="progress-pct-lbl">0 % accompli</span>
+              <span id="progress-target-lbl">Objectif</span>
+            </div>
+            <div class="progress-track">
+              <div id="weight-progress-bar" class="progress-bar" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="chart-legend">
+            <span><strong style="color:#4D8BFF;">━━</strong> Moyenne lissée 7 j</span>
+            <span><strong style="color:#F3F4F6;">●</strong> Pesées brutes</span>
+            <span><strong style="color:#F2B844;">┄┄</strong> Objectif</span>
+            <span><strong style="color:#4D8BFF;">⚡</strong> Séance Play Club</span>
+          </div>
+
+          <div class="svg-container">
+            <svg id="weight-svg" class="trend-svg" viewBox="0 0 760 270" role="img" aria-label="Graphique évolution du poids"></svg>
+          </div>
+        </article>
+
+        <!-- BLOC DERNIERS JOURS COMBINÉS (FRISE 10 JOURS) -->
+        <article class="card">
+          <div class="card-top">
+            <h3>Derniers jours combinés</h3>
+            <span class="metric-sub">10 derniers jours (Journée • Sport • Poids)</span>
+          </div>
+          <div id="combined-strip-10" class="strip-10"></div>
+        </article>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ==================== MODALE : DÉMARRER À ZÉRO ==================== -->
+  <div id="reset-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="reset-modal-title">
+    <div class="modal-card">
+      <h3 id="reset-modal-title">Démarrer à zéro ?</h3>
+      <p>
+        Cela effacera les données de démonstration (journées, séances et pesées) pour repartir sur un suivi vierge. Tes idées de repas personnalisées seront conservées.
+      </p>
+      <div class="modal-actions">
+        <button type="button" class="btn-outline" onclick="closeResetModal()">Annuler</button>
+        <button type="button" class="btn-blue" onclick="confirmResetToBlank()">Oui, démarrer à zéro</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================================
+       CLÉS LOCALSTORAGE & DONNÉES DE BASE (RECETTES D'EMMANUELLE)
+    ========================================================================= */
+    const STORAGE_STATE_KEY = 'cap_equilibre_state_v4';
+    const STORAGE_CUSTOM_IDEAS_KEY = 'cap_equilibre_custom_ideas_v4';
+
+    const DAY_META = {
+      vert:   { short: 'Vert',   desc: 'Journée équilibrée, sans alcool' },
+      jaune:  { short: 'Jaune',  desc: 'Exception week-end prévue' },
+      orange: { short: 'Orange', desc: 'Petit écart / portions larges' },
+      rouge:  { short: 'Rouge',  desc: 'Gros écart / alcool en semaine' }
+    };
+
+    const SPORT_META = {
+      vert:   { short: 'Vert',   desc: 'Séance modérée (au top)' },
+      jaune:  { short: 'Jaune',  desc: 'Séance un peu intense' },
+      orange: { short: 'Orange', desc: 'Séance trop intense / épuisante' },
+      rouge:  { short: 'Rouge',  desc: 'Repos / Pas de séance' }
+    };
+
+    const CATEGORY_META = {
+      secours: { label: 'Secours express', badgeClass: 'cat-secours', defaultTime: '5–15 min' },
+      feuvert: { label: 'Feu vert',        badgeClass: 'cat-feuvert', defaultTime: 'Prévu' },
+      ajuster: { label: 'À ajuster',       badgeClass: 'cat-ajuster', defaultTime: 'Assiette 23 cm' },
+      plaisir: { label: 'Plaisir calibré', badgeClass: 'cat-plaisir', defaultTime: 'Part unique' }
+    };
+
+    const EMMANUELLE_RECIPES = [
+      // SECOURS EXPRESS
+      {
+        cat: 'secours',
+        time: '10 min',
+        title: 'Pâtes au thon express',
+        desc: 'Privilégier des pâtes semi-complètes al dente ou mélangées à des courgettes.'
+      },
+      {
+        cat: 'secours',
+        time: '12 min',
+        title: 'Wok de légumes sauce soja et cacahuètes',
+        desc: 'Faire la part belle aux légumes et protéines, main légère sur les nouilles ramen.'
+      },
+      {
+        cat: 'secours',
+        time: '12 min',
+        title: 'Tagliatelles de courgettes, poivrons émincés, crevettes, cacahuètes, sauce soja, mangue',
+        desc: 'Base ultra-fraîche et rassasiante à index glycémique bas.'
+      },
+      {
+        cat: 'secours',
+        time: '10 min',
+        title: 'Haché de saumon et crudités',
+        desc: 'Assiette rapide riche en protéines et oméga-3 avec grand volume de légumes.'
+      },
+      {
+        cat: 'secours',
+        time: '5 min',
+        title: 'Salade avocat - saumon',
+        desc: 'Assemblage express sans cuisson, très rassasiant.'
+      },
+      {
+        cat: 'secours',
+        time: '10 min',
+        title: 'Endives - poitrine - œuf',
+        desc: 'Simple, protéiné et sans pic glycémique.'
+      },
+      {
+        cat: 'secours',
+        time: '12 min',
+        title: 'Omelette pommes de terre - salade',
+        desc: 'Réduire les pommes de terre et remplir la moitié de l’assiette avec la salade.'
+      },
+      {
+        cat: 'secours',
+        time: '15 min',
+        title: 'Fondue de poireaux',
+        desc: 'À accompagner d’œufs, de poisson ou de blanc de poulet.'
+      },
+      {
+        cat: 'secours',
+        time: '10 min',
+        title: 'Galettes complètes / galettes avoine salées',
+        desc: 'IG bas naturel grâce au sarrasin ou aux flocons d’avoine.'
+      },
+      {
+        cat: 'secours',
+        time: '5 min',
+        title: 'Houmous d’avocat',
+        desc: 'Avec bâtonnets de crudités et une petite portion de naan ou pain Oslo.'
+      },
+
+      // FEU VERT (IDÉES PRÉVUES ALIGNÉES)
+      {
+        cat: 'feuvert',
+        time: 'Prévu',
+        title: 'Saumon en papillote et poireaux',
+        desc: 'Aucun changement nécessaire : équilibre naturel protéines + légumes.'
+      },
+      {
+        cat: 'feuvert',
+        time: 'Prévu',
+        title: 'Dos de cabillaud - poivrons - crevettes - sauce fumet de poisson',
+        desc: 'Plat complet léger et savoureux déjà aligné IG bas.'
+      },
+      {
+        cat: 'feuvert',
+        time: 'Prévu',
+        title: 'Dos de cabillaud - haricots verts - riz',
+        desc: 'Garder simplement une petite portion de riz (25 % de l’assiette).'
+      },
+      {
+        cat: 'feuvert',
+        time: 'Prévu',
+        title: 'Poulet au chorizo et poivrons',
+        desc: 'Plat familial déjà très bien structuré.'
+      },
+      {
+        cat: 'feuvert',
+        time: 'Prévu',
+        title: 'Lasagnes d’aubergine',
+        desc: 'Excellente alternative végétale qui évite la surcharge de pâtes.'
+      },
+      {
+        cat: 'feuvert',
+        time: 'Prévu',
+        title: 'Courge spaghetti carbonara / Carbonara butternut',
+        desc: 'Garde toute la gourmandise avec une charge glycémique réduite.'
+      },
+      {
+        cat: 'feuvert',
+        time: 'Prévu',
+        title: 'Chili con carne / Chili aux cacahuètes',
+        desc: 'Les haricots rouges apportent des fibres qui ralentissent l’absorption des glucides.'
+      },
+      {
+        cat: 'feuvert',
+        time: 'Prévu',
+        title: 'Bo bun de bœuf / Poké bowl',
+        desc: 'Forcer sur les crudités et les protéines, réduire la base de riz ou vermicelles.'
+      },
+      {
+        cat: 'feuvert',
+        time: 'Prévu',
+        title: 'Bœuf bourguignon - carottes / Osso buco à la milanaise',
+        desc: 'Viande et légumes en priorité dans l’assiette, petite part d’accompagnement.'
+      },
+
+      // À AJUSTER (50 % LÉGUMES, 25 % PROTÉINES, 25 % FÉCULENTS)
+      {
+        cat: 'ajuster',
+        time: 'Assiette 23 cm',
+        title: 'Blanquette de veau ou de poulet (carottes / riz)',
+        desc: 'Doubler les carottes dans ton assiette et diviser la part de riz par deux.'
+      },
+      {
+        cat: 'ajuster',
+        time: 'Assiette 23 cm',
+        title: 'Médaillons de poulet - champignons - riz',
+        desc: '50 % champignons/légumes verts, 25 % poulet, 25 % riz.'
+      },
+      {
+        cat: 'ajuster',
+        time: 'Assiette 23 cm',
+        title: 'Paupiettes - julienne de légumes - riz',
+        desc: 'Remplir le grand compartiment avec la julienne de légumes.'
+      },
+      {
+        cat: 'ajuster',
+        time: 'Assiette 23 cm',
+        title: 'Saucisse de Toulouse - haricots verts - riz',
+        desc: 'Privilégier les haricots verts et limiter le riz au petit compartiment.'
+      },
+      {
+        cat: 'ajuster',
+        time: 'Assiette 23 cm',
+        title: 'Filet de limande meunière - riz - julienne de légumes',
+        desc: '50 % julienne de légumes, 25 % poisson, 25 % riz.'
+      },
+      {
+        cat: 'ajuster',
+        time: 'Assiette 23 cm',
+        title: 'Rognons - riz / Échine de porc - tomate - riz',
+        desc: 'Ajouter des légumes cuits ou crudités en moitié d’assiette.'
+      },
+      {
+        cat: 'ajuster',
+        time: 'Assiette 23 cm',
+        title: 'Dos de cabillaud (ou poulet) sauce curry mangue coco crevettes - riz',
+        desc: 'Garder le riz en accompagnement mesuré (un quart d’assiette).'
+      },
+      {
+        cat: 'ajuster',
+        time: 'Assiette 23 cm',
+        title: 'Couscous',
+        desc: 'Viande, légumes et pois chiches en base principale, petite portion de semoule.'
+      },
+
+      // PLAISIR CALIBRÉ (1 PART UNIQUE + SALADE OU SOUPE)
+      {
+        cat: 'plaisir',
+        time: 'Part unique',
+        title: 'Lasagnes (classiques, saumon-épinards, canard-épinards, bolognaise-courgettes)',
+        desc: 'Une part calibrée en cuisine + grande salade verte ou bol de soupe avant.'
+      },
+      {
+        cat: 'plaisir',
+        time: 'Part unique',
+        title: 'Tarte aux poireaux / Tarte thon-tomates / Tarte Boursin-thon-courgettes',
+        desc: 'Une part unique servie avec la moitié de l’assiette en crudités.'
+      },
+      {
+        cat: 'plaisir',
+        time: 'Part unique',
+        title: 'Gratin de chou-fleur ou Gratin saumon - poireaux - purée pdt/patate douce',
+        desc: 'Portion calibrée en cuisine, sans resservie, accompagnée de salade.'
+      },
+      {
+        cat: 'plaisir',
+        time: 'Part unique',
+        title: 'Hachis parmentier / Hachis canard - salade',
+        desc: 'Limiter la hauteur de purée et compléter avec beaucoup de salade.'
+      },
+      {
+        cat: 'plaisir',
+        time: 'Part unique',
+        title: 'Pâtes sauce ricotta poivrons / Tagliatelles épinards-ail-crème-pesto',
+        desc: 'Bol de soupe ou crudités en entrée + un poing de pâtes.'
+      }
+    ];
+
+    /* =========================================================================
+       UTILITAIRES DATES & FORMATAGE
+    ========================================================================= */
+    function getTodayIso() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function shiftIsoDate(iso, deltaDays) {
+      const [y, m, d] = iso.split('-').map(Number);
+      const dt = new Date(y, m - 1, d + deltaDays);
+      const yy = dt.getFullYear();
+      const mm = String(dt.getMonth() + 1).padStart(2, '0');
+      const dd = String(dt.getDate()).padStart(2, '0');
+      return `${yy}-${mm}-${dd}`;
+    }
+
+    function getMondayIso(iso) {
+      const [y, m, d] = iso.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      const day = dt.getDay();
+      const diff = day === 0 ? -6 : 1 - day;
+      return shiftIsoDate(iso, diff);
+    }
+
+    function formatShortFr(iso) {
+      const [y, m, d] = iso.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      const s = dt.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    function formatCompactFr(iso) {
+      const [y, m, d] = iso.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      return dt.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
+    }
+
+    function formatLongFr(iso) {
+      const [y, m, d] = iso.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      const s = dt.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    function fmtNum(val, decimals = 1) {
+      if (val === null || val === undefined || Number.isNaN(Number(val))) return '--';
+      return Number(val).toFixed(decimals).replace('.', ',');
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    /* =========================================================================
+       DONNÉES DE DÉMONSTRATION RÉALISTES SUR 14 JOURS
+    ========================================================================= */
+    function buildDemo14DaysState() {
+      const today = getTodayIso();
+      const days = {};
+
+      const plan = [
+        { offset: -13, day: 'vert',   sport: 'vert' },
+        { offset: -12, day: 'vert',   sport: 'rouge' },
+        { offset: -11, day: 'orange', sport: 'jaune' },
+        { offset: -10, day: 'vert',   sport: 'rouge' },
+        { offset: -9,  day: 'vert',   sport: 'vert' },
+        { offset: -8,  day: 'jaune',  sport: 'rouge' },
+        { offset: -7,  day: 'vert',   sport: 'vert' },
+        { offset: -6,  day: 'vert',   sport: 'rouge' },
+        { offset: -5,  day: 'vert',   sport: 'vert' },
+        { offset: -4,  day: 'vert',   sport: 'rouge' },
+        { offset: -3,  day: 'vert',   sport: 'jaune' },
+        { offset: -2,  day: 'jaune',  sport: 'rouge' },
+        { offset: -1,  day: 'vert',   sport: 'vert' },
+        { offset: 0,   day: 'vert',   sport: 'vert' }
+      ];
+
+      plan.forEach(item => {
+        const dIso = shiftIsoDate(today, item.offset);
+        days[dIso] = {
+          date: dIso,
+          dayLevel: item.day,
+          sportLevel: item.sport
+        };
+      });
+
+      const weights = [
+        { date: shiftIsoDate(today, -13), w: 76.8 },
+        { date: shiftIsoDate(today, -11), w: 76.6 },
+        { date: shiftIsoDate(today, -8),  w: 76.1 },
+        { date: shiftIsoDate(today, -6),  w: 76.2 },
+        { date: shiftIsoDate(today, -4),  w: 75.5 },
+        { date: shiftIsoDate(today, -2),  w: 75.1 },
+        { date: shiftIsoDate(today, -1),  w: 75.2 },
+        { date: today,                    w: 74.4 }
+      ];
+
+      return {
+        isDemo: true,
+        goals: { startWeight: 76.8, targetWeight: 69.0 },
+        days,
+        weights
+      };
+    }
+
+    let appState = null;
+    let customIdeas = [];
+    let activeDateOffset = 0;
+    let activeRescueCategory = 'all';
+    let currentRecipeKey = '';
+    let toastTimer = null;
+
+    /* =========================================================================
+       AUTO-SAUVEGARDE CHROME (FILE SYSTEM ACCESS API + INDEXEDDB)
+    ========================================================================= */
+    const IDB_NAME = 'cap_equilibre_fs_db';
+    const IDB_STORE = 'file_handles';
+    const IDB_HANDLE_KEY = 'auto_backup_handle';
+    let autoBackupFileHandle = null;
+    let autoBackupNeedsReauth = false;
+    let lastAutoSyncTime = null;
+
+    function openHandleDb() {
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) {
+          reject(new Error('IndexedDB indisponible'));
+          return;
+        }
+        const req = indexedDB.open(IDB_NAME, 1);
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains(IDB_STORE)) {
+            db.createObjectStore(IDB_STORE);
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function persistFileHandleInDb(handle) {
+      try {
+        const db = await openHandleDb();
+        await new Promise((resolve, reject) => {
+          const tx = db.transaction(IDB_STORE, 'readwrite');
+          tx.objectStore(IDB_STORE).put(handle, IDB_HANDLE_KEY);
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+        });
+      } catch (e) {
+        console.warn('Impossible de mémoriser le lien fichier dans IndexedDB :', e);
+      }
+    }
+
+    async function loadFileHandleFromDb() {
+      try {
+        const db = await openHandleDb();
+        return await new Promise((resolve, reject) => {
+          const tx = db.transaction(IDB_STORE, 'readonly');
+          const req = tx.objectStore(IDB_STORE).get(IDB_HANDLE_KEY);
+          req.onsuccess = () => resolve(req.result || null);
+          req.onerror = () => reject(req.error);
+        });
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function buildBackupPayload() {
+      return {
+        app: 'Cap & Équilibre',
+        exportedAt: new Date().toISOString(),
+        state: appState,
+        customIdeas
+      };
+    }
+
+    function updateAutoBackupUi() {
+      const pill = document.getElementById('autosave-status-pill');
+      const txt = document.getElementById('autosave-status-text');
+      const btn = document.getElementById('btn-link-autosave');
+      if (!pill || !txt || !btn) return;
+
+      pill.classList.remove('is-linked', 'is-pending');
+
+      if (!autoBackupFileHandle) {
+        txt.textContent = 'Auto-sauvegarde : inactive';
+        btn.innerHTML = '<span>🔄 Lier sauvegarde auto</span>';
+        return;
+      }
+
+      const fileName = autoBackupFileHandle.name || 'cap-equilibre-sauvegarde.json';
+      if (autoBackupNeedsReauth) {
+        pill.classList.add('is-pending');
+        txt.textContent = `Auto-sauvegarde : ${fileName} (cliquer pour réactiver)`;
+        btn.innerHTML = '<span>🔓 Réactiver sauvegarde</span>';
+      } else {
+        pill.classList.add('is-linked');
+        const syncSuffix = lastAutoSyncTime ? ` • Synchronisée à ${lastAutoSyncTime}` : '';
+        txt.textContent = `Auto-sauvegarde : ${fileName}${syncSuffix}`;
+        btn.innerHTML = '<span>🔄 Changer de fichier</span>';
+      }
+    }
+
+    async function writeAutoBackupFile(silent = true) {
+      if (!autoBackupFileHandle) return false;
+      try {
+        const perm = await autoBackupFileHandle.queryPermission({ mode: 'readwrite' });
+        if (perm !== 'granted') {
+          autoBackupNeedsReauth = true;
+          updateAutoBackupUi();
+          return false;
+        }
+
+        const writable = await autoBackupFileHandle.createWritable();
+        await writable.write(JSON.stringify(buildBackupPayload(), null, 2));
+        await writable.close();
+
+        const now = new Date();
+        lastAutoSyncTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        autoBackupNeedsReauth = false;
+        updateAutoBackupUi();
+        return true;
+      } catch (err) {
+        console.warn('Écriture auto-sauvegarde interrompue :', err);
+        autoBackupNeedsReauth = true;
+        updateAutoBackupUi();
+        if (!silent) {
+          showToast('Permission requise pour écrire dans le fichier lié. Utilise « Exporter (JSON) » en secours.');
+        }
+        return false;
+      }
+    }
+
+    async function linkAutoBackupFile() {
+      if (typeof window.showSaveFilePicker !== 'function') {
+        showToast('Sauvegarde auto directe non disponible ici (ouvre le fichier HTML dans Chrome ou utilise Exporter JSON).');
+        return;
+      }
+
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: 'cap-equilibre-sauvegarde.json',
+          types: [
+            {
+              description: 'Fichier de sauvegarde JSON',
+              accept: { 'application/json': ['.json'] }
+            }
+          ]
+        });
+
+        autoBackupFileHandle = handle;
+        autoBackupNeedsReauth = false;
+        await persistFileHandleInDb(handle);
+
+        const ok = await writeAutoBackupFile(false);
+        if (ok) {
+          showToast(`Auto-sauvegarde activée sur ${handle.name}`);
+        }
+      } catch (err) {
+        if (err && err.name === 'AbortError') return;
+        console.warn('Sélection fichier annulée ou restreinte :', err);
+        showToast('Impossible de lier un fichier depuis cet aperçu : ouvre le fichier .html dans Chrome ou utilise Exporter (JSON).');
+      }
+    }
+
+    async function handleAutosaveStatusClick() {
+      if (!autoBackupFileHandle) {
+        await linkAutoBackupFile();
+        return;
+      }
+      if (autoBackupNeedsReauth) {
+        try {
+          const perm = await autoBackupFileHandle.requestPermission({ mode: 'readwrite' });
+          if (perm === 'granted') {
+            autoBackupNeedsReauth = false;
+            const ok = await writeAutoBackupFile(false);
+            if (ok) showToast(`Auto-sauvegarde réactivée sur ${autoBackupFileHandle.name}`);
+          }
+        } catch (err) {
+          await linkAutoBackupFile();
+        }
+      }
+    }
+
+    async function restoreSavedFileHandleOnBoot() {
+      const savedHandle = await loadFileHandleFromDb();
+      if (!savedHandle) {
+        updateAutoBackupUi();
+        return;
+      }
+      autoBackupFileHandle = savedHandle;
+      try {
+        const perm = await savedHandle.queryPermission({ mode: 'readwrite' });
+        autoBackupNeedsReauth = perm !== 'granted';
+      } catch (e) {
+        autoBackupNeedsReauth = true;
+      }
+      updateAutoBackupUi();
+    }
+
+    function getActiveDateIso() {
+      return shiftIsoDate(getTodayIso(), activeDateOffset);
+    }
+
+    function showToast(message) {
+      const bar = document.getElementById('toast-bar');
+      if (!bar) return;
+      bar.textContent = message;
+      bar.classList.add('is-visible');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        bar.classList.remove('is-visible');
+      }, 3200);
+    }
+
+    function normalizeCustomIdea(rawItem, idx) {
+      if (typeof rawItem === 'string') {
+        return {
+          id: `custom-legacy-${idx}`,
+          title: rawItem,
+          cat: 'secours',
+          time: '5–15 min',
+          desc: 'Ajout personnel enregistré dans ta liste.',
+          isCustom: true
+        };
+      }
+      const cat = CATEGORY_META[rawItem.cat] ? rawItem.cat : 'secours';
+      return {
+        id: rawItem.id || `custom-${idx}-${Date.now()}`,
+        title: String(rawItem.title || '').trim(),
+        cat,
+        time: rawItem.time || CATEGORY_META[cat].defaultTime,
+        desc: rawItem.desc || 'Ajout personnel enregistré dans ta liste.',
+        isCustom: true
+      };
+    }
+
+    function loadState() {
+      try {
+        const rawCustom = localStorage.getItem(STORAGE_CUSTOM_IDEAS_KEY);
+        if (rawCustom) {
+          const arr = JSON.parse(rawCustom);
+          if (Array.isArray(arr)) {
+            customIdeas = arr.map((it, i) => normalizeCustomIdea(it, i)).filter(it => it.title);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        const raw = localStorage.getItem(STORAGE_STATE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.goals && parsed.days && parsed.weights) {
+            appState = parsed;
+            return;
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
+      appState = buildDemo14DaysState();
+      saveState();
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_STATE_KEY, JSON.stringify(appState));
+      } catch (e) {
+        console.error(e);
+      }
+      writeAutoBackupFile(true);
+    }
+
+    function saveCustomIdeas() {
+      try {
+        localStorage.setItem(STORAGE_CUSTOM_IDEAS_KEY, JSON.stringify(customIdeas));
+      } catch (e) {
+        console.error(e);
+      }
+      writeAutoBackupFile(true);
+    }
+
+    /* =========================================================================
+       ACTIONS EN-TÊTE : EXPORT JSON, IMPORT JSON, DÉMARRER À ZÉRO
+    ========================================================================= */
+    function exportDataJson() {
+      const today = getTodayIso();
+      const payload = buildBackupPayload();
+
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `cap-equilibre-sauvegarde-${today}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      showToast(`Sauvegarde téléchargée : cap-equilibre-sauvegarde-${today}.json`);
+    }
+
+    function triggerImportFile() {
+      const input = document.getElementById('import-file-input');
+      input.value = '';
+      input.click();
+    }
+
+    function handleImportFile(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          const importedState = parsed.state || parsed;
+
+          if (!importedState || !importedState.goals || !importedState.days || !Array.isArray(importedState.weights)) {
+            showToast('Fichier JSON invalide ou incompatible.');
+            return;
+          }
+
+          appState = {
+            isDemo: Boolean(importedState.isDemo),
+            goals: {
+              startWeight: Number(importedState.goals.startWeight) || 75.0,
+              targetWeight: Number(importedState.goals.targetWeight) || 68.0
+            },
+            days: importedState.days,
+            weights: importedState.weights
+          };
+
+          if (Array.isArray(parsed.customIdeas)) {
+            customIdeas = parsed.customIdeas.map((it, i) => normalizeCustomIdea(it, i)).filter(it => it.title);
+            saveCustomIdeas();
+          }
+
+          saveState();
+          renderAll();
+          showToast('Données importées et restaurées avec succès.');
+        } catch (err) {
+          console.error(err);
+          showToast('Impossible de lire ce fichier JSON.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function openResetModal() {
+      document.getElementById('reset-modal').classList.add('is-open');
+    }
+
+    function closeResetModal() {
+      document.getElementById('reset-modal').classList.remove('is-open');
+    }
+
+    function confirmResetToBlank() {
+      const startW = appState && appState.goals ? appState.goals.startWeight : 75.0;
+      const targetW = appState && appState.goals ? appState.goals.targetWeight : 68.0;
+
+      appState = {
+        isDemo: false,
+        goals: { startWeight: startW, targetWeight: targetW },
+        days: {},
+        weights: []
+      };
+
+      activeDateOffset = 0;
+      saveState();
+      closeResetModal();
+      renderAll();
+      showToast('Historique remis à zéro. Tes idées de repas personnalisées sont conservées.');
+    }
+
+    /* =========================================================================
+       SAISIE RAPIDE : JOURNÉE, SPORT, POIDS, REPAS DE SECOURS & IDÉES
+    ========================================================================= */
+    function setActiveDateOffset(offset) {
+      activeDateOffset = offset;
+      renderAll();
+    }
+
+    function ensureDay(iso) {
+      if (!appState.days[iso]) {
+        appState.days[iso] = { date: iso, dayLevel: null, sportLevel: null };
+      }
+      return appState.days[iso];
+    }
+
+    function recordDayChoice(color) {
+      const iso = getActiveDateIso();
+      const rec = ensureDay(iso);
+      rec.dayLevel = color;
+      saveState();
+      renderAll();
+      showToast(`Journée (${formatShortFr(iso)}) : ${DAY_META[color].short} — ${DAY_META[color].desc}`);
+    }
+
+    function recordSportChoice(color) {
+      const iso = getActiveDateIso();
+      const rec = ensureDay(iso);
+      rec.sportLevel = color;
+      saveState();
+      renderAll();
+      showToast(`Sport (${formatShortFr(iso)}) : ${SPORT_META[color].short} — ${SPORT_META[color].desc}`);
+    }
+
+    function handleWeightSave(event) {
+      event.preventDefault();
+      const input = document.getElementById('weight-field');
+      const val = parseFloat(String(input.value).replace(',', '.'));
+      if (Number.isNaN(val) || val < 35 || val > 250) {
+        showToast('Saisis un poids valide entre 35 et 250 kg.');
+        return;
+      }
+
+      const iso = getActiveDateIso();
+      const rounded = Number(val.toFixed(1));
+      const idx = appState.weights.findIndex(item => item.date === iso);
+      if (idx >= 0) {
+        appState.weights[idx].w = rounded;
+      } else {
+        appState.weights.push({ date: iso, w: rounded });
+      }
+      appState.weights.sort((a, b) => a.date.localeCompare(b.date));
+
+      input.value = '';
+      saveState();
+      renderAll();
+      showToast(`Poids enregistré (${formatShortFr(iso)}) : ${fmtNum(rounded)} kg`);
+    }
+
+    function handleGoalsSave(event) {
+      event.preventDefault();
+      const startVal = parseFloat(document.getElementById('goal-start-field').value);
+      const targetVal = parseFloat(document.getElementById('goal-target-field').value);
+      if (Number.isNaN(startVal) || Number.isNaN(targetVal)) return;
+
+      appState.goals.startWeight = Number(startVal.toFixed(1));
+      appState.goals.targetWeight = Number(targetVal.toFixed(1));
+      saveState();
+      renderAll();
+      showToast('Poids de départ et objectif mis à jour.');
+    }
+
+    function getAllRecipesPool() {
+      const baseWithKeys = EMMANUELLE_RECIPES.map((item, idx) => ({
+        ...item,
+        key: `base-${idx}`,
+        isCustom: false
+      }));
+      const customWithKeys = customIdeas.map((item, idx) => ({
+        ...item,
+        key: item.id || `custom-${idx}`,
+        isCustom: true
+      }));
+      return [...customWithKeys, ...baseWithKeys];
+    }
+
+    function getFilteredRecipes() {
+      const pool = getAllRecipesPool();
+      if (activeRescueCategory === 'all') return pool;
+      if (activeRescueCategory === 'custom') return pool.filter(r => r.isCustom);
+      return pool.filter(r => r.cat === activeRescueCategory);
+    }
+
+    function setRescueCategory(catKey) {
+      activeRescueCategory = catKey;
+      const filtered = getFilteredRecipes();
+      if (filtered.length > 0 && !filtered.some(r => r.key === currentRecipeKey)) {
+        currentRecipeKey = filtered[0].key;
+      }
+      renderRescueSection();
+    }
+
+    function showNextRescueIdea() {
+      const filtered = getFilteredRecipes();
+      if (!filtered.length) return;
+
+      if (filtered.length === 1) {
+        currentRecipeKey = filtered[0].key;
+      } else {
+        const candidates = filtered.filter(r => r.key !== currentRecipeKey);
+        const pick = candidates[Math.floor(Math.random() * candidates.length)];
+        currentRecipeKey = pick.key;
+      }
+      renderRescueSection();
+    }
+
+    function handleAddCustomRescue(event) {
+      event.preventDefault();
+      const input = document.getElementById('custom-rescue-field');
+      const catSelect = document.getElementById('custom-rescue-cat');
+      const title = input.value.trim();
+      if (!title) return;
+
+      const selectedCat = CATEGORY_META[catSelect.value] ? catSelect.value : 'secours';
+      const newEntry = {
+        id: `custom-${Date.now()}`,
+        title,
+        cat: selectedCat,
+        time: CATEGORY_META[selectedCat].defaultTime,
+        desc: 'Ajout personnel enregistré dans ta liste.',
+        isCustom: true
+      };
+
+      customIdeas.unshift(newEntry);
+      currentRecipeKey = newEntry.id;
+
+      // Si un filtre incompatible était actif, basculer sur la catégorie choisie
+      if (activeRescueCategory !== 'all' && activeRescueCategory !== 'custom' && activeRescueCategory !== selectedCat) {
+        activeRescueCategory = selectedCat;
+      }
+
+      input.value = '';
+      saveCustomIdeas();
+      renderRescueSection();
+      showToast(`Idée ajoutée dans « ${CATEGORY_META[selectedCat].label} ».`);
+    }
+
+    function removeCustomRescue(idx) {
+      const removed = customIdeas[idx];
+      customIdeas.splice(idx, 1);
+      if (removed && currentRecipeKey === removed.id) {
+        currentRecipeKey = '';
+      }
+      saveCustomIdeas();
+      renderRescueSection();
+      showToast('Idée personnelle supprimée.');
+    }
+
+    /* =========================================================================
+       CALCULS DES SÉRIES & COURBE DE POIDS
+    ========================================================================= */
+    function isDayInFrame(rec) {
+      if (!rec || !rec.dayLevel) return false;
+      return rec.dayLevel === 'vert' || rec.dayLevel === 'jaune';
+    }
+
+    function isDayNoAlcohol(rec) {
+      if (!rec || !rec.dayLevel) return false;
+      return rec.dayLevel === 'vert' || rec.dayLevel === 'jaune' || rec.dayLevel === 'orange';
+    }
+
+    function isActiveSport(rec) {
+      if (!rec || !rec.sportLevel) return false;
+      return rec.sportLevel === 'vert' || rec.sportLevel === 'jaune' || rec.sportLevel === 'orange';
+    }
+
+    function computeDashboardStats() {
+      const today = getTodayIso();
+      const sortedDates = Object.keys(appState.days).sort();
+
+      let bestFrame = 0;
+      let runFrame = 0;
+      let bestAlcohol = 0;
+      let runAlcohol = 0;
+
+      sortedDates.forEach(d => {
+        const rec = appState.days[d];
+        if (isDayInFrame(rec)) {
+          runFrame += 1;
+          if (runFrame > bestFrame) bestFrame = runFrame;
+        } else if (rec && rec.dayLevel) {
+          runFrame = 0;
+        }
+
+        if (isDayNoAlcohol(rec)) {
+          runAlcohol += 1;
+          if (runAlcohol > bestAlcohol) bestAlcohol = runAlcohol;
+        } else if (rec && rec.dayLevel) {
+          runAlcohol = 0;
+        }
+      });
+
+      const todayRec = appState.days[today];
+      const anchor = (todayRec && todayRec.dayLevel) ? today : shiftIsoDate(today, -1);
+
+      let frameStreak = 0;
+      let cursor = anchor;
+      while (isDayInFrame(appState.days[cursor])) {
+        frameStreak += 1;
+        cursor = shiftIsoDate(cursor, -1);
+      }
+      if (frameStreak > bestFrame) bestFrame = frameStreak;
+
+      let alcoholStreak = 0;
+      cursor = anchor;
+      while (isDayNoAlcohol(appState.days[cursor])) {
+        alcoholStreak += 1;
+        cursor = shiftIsoDate(cursor, -1);
+      }
+      if (alcoholStreak > bestAlcohol) bestAlcohol = alcoholStreak;
+
+      const monday = getMondayIso(today);
+      let sportWeekCount = 0;
+      for (let i = 0; i < 7; i++) {
+        const d = shiftIsoDate(monday, i);
+        if (isActiveSport(appState.days[d])) sportWeekCount += 1;
+      }
+
+      let valid14 = 0;
+      for (let i = -13; i <= 0; i++) {
+        if (isDayInFrame(appState.days[shiftIsoDate(today, i)])) valid14 += 1;
+      }
+
+      const sortedWeights = [...appState.weights].sort((a, b) => a.date.localeCompare(b.date));
+      const weightSeries = sortedWeights.map(item => {
+        const minDate = shiftIsoDate(item.date, -6);
+        const win = sortedWeights.filter(x => x.date >= minDate && x.date <= item.date);
+        const avg = win.reduce((sum, x) => sum + Number(x.w), 0) / win.length;
+        return {
+          date: item.date,
+          w: Number(item.w),
+          ma7: Number(avg.toFixed(2))
+        };
+      });
+
+      const startW = appState.goals.startWeight;
+      const targetW = appState.goals.targetWeight;
+      const latestW = weightSeries.length ? weightSeries[weightSeries.length - 1].w : startW;
+      const latestMa7 = weightSeries.length ? weightSeries[weightSeries.length - 1].ma7 : startW;
+
+      const deltaFromStart = latestW - startW;
+      const distanceLeft = Math.max(0, latestW - targetW);
+      const totalToLose = Math.max(0.1, startW - targetW);
+      const lostSoFar = Math.max(0, startW - latestW);
+      const progressPct = Math.min(100, Math.max(0, Math.round((lostSoFar / totalToLose) * 100)));
+
+      return {
+        frameStreak,
+        bestFrame,
+        alcoholStreak,
+        bestAlcohol,
+        sportWeekCount,
+        valid14,
+        weightSeries,
+        startW,
+        targetW,
+        latestW,
+        latestMa7,
+        deltaFromStart,
+        distanceLeft,
+        progressPct
+      };
+    }
+
+    /* =========================================================================
+       RENDU INTERFACE
+    ========================================================================= */
+    function renderRescueSection() {
+      document.querySelectorAll('.cat-filter-btn').forEach(btn => {
+        btn.classList.toggle('is-active', btn.dataset.cat === activeRescueCategory);
+      });
+
+      const filtered = getFilteredRecipes();
+      const badgeEl = document.getElementById('rescue-cat-badge');
+      const timeEl = document.getElementById('rescue-time');
+      const titleEl = document.getElementById('rescue-title');
+      const descEl = document.getElementById('rescue-desc');
+      const indexPill = document.getElementById('rescue-index-pill');
+
+      if (!filtered.length) {
+        indexPill.textContent = '0 / 0';
+        badgeEl.className = 'cat-badge cat-secours';
+        badgeEl.textContent = 'Mes idées';
+        timeEl.textContent = '';
+        titleEl.textContent = 'Aucune idée personnelle enregistrée';
+        descEl.textContent = 'Utilise le champ juste en dessous pour ajouter ta première recette ou idée express.';
+      } else {
+        let currentIdx = filtered.findIndex(r => r.key === currentRecipeKey);
+        if (currentIdx < 0) {
+          currentIdx = 0;
+          currentRecipeKey = filtered[0].key;
+        }
+        const item = filtered[currentIdx];
+        const meta = CATEGORY_META[item.cat] || CATEGORY_META.secours;
+
+        indexPill.textContent = `${currentIdx + 1} / ${filtered.length}`;
+        badgeEl.className = `cat-badge ${meta.badgeClass}`;
+        badgeEl.textContent = item.isCustom ? `Mes idées • ${meta.label}` : meta.label;
+        timeEl.textContent = item.time || meta.defaultTime;
+        titleEl.textContent = item.title;
+        descEl.textContent = item.desc;
+      }
+
+      const tagsEl = document.getElementById('custom-rescue-tags');
+      tagsEl.innerHTML = customIdeas.map((item, idx) => {
+        const meta = CATEGORY_META[item.cat] || CATEGORY_META.secours;
+        return `
+          <span class="custom-tag">
+            <span>${escapeHtml(item.title)}</span>
+            <span class="tag-cat">(${escapeHtml(meta.label)})</span>
+            <button type="button" aria-label="Supprimer ${escapeHtml(item.title)}" onclick="removeCustomRescue(${idx})">×</button>
+          </span>
+        `;
+      }).join('');
+    }
+
+    function renderSaisieColumn() {
+      const activeIso = getActiveDateIso();
+      const dateLabel = activeDateOffset === 0 ? "Aujourd'hui" : `Hier (${formatCompactFr(activeIso)})`;
+
+      document.getElementById('pick-today').classList.toggle('is-active', activeDateOffset === 0);
+      document.getElementById('pick-yesterday').classList.toggle('is-active', activeDateOffset === -1);
+      document.getElementById('day-status-pill').textContent = dateLabel;
+      document.getElementById('sport-status-pill').textContent = dateLabel;
+
+      const activeRec = appState.days[activeIso] || {};
+      ['vert', 'jaune', 'orange', 'rouge'].forEach(c => {
+        document.getElementById(`btn-day-${c}`).classList.toggle('is-selected', activeRec.dayLevel === c);
+        document.getElementById(`btn-sport-${c}`).classList.toggle('is-selected', activeRec.sportLevel === c);
+      });
+
+      const descDates = Object.keys(appState.days).sort().reverse();
+
+      const lastDays = descDates.map(d => appState.days[d]).filter(r => r.dayLevel).slice(0, 4);
+      document.getElementById('recent-day-entries').innerHTML = lastDays.length
+        ? lastDays.map(r => `
+            <li class="recent-row">
+              <span>${formatShortFr(r.date)}</span>
+              <span class="badge-color badge-${r.dayLevel}">${DAY_META[r.dayLevel].short} — ${DAY_META[r.dayLevel].desc}</span>
+            </li>
+          `).join('')
+        : '<li class="recent-row"><span style="color:#9CA3AF;">Aucune entrée enregistrée.</span></li>';
+
+      const lastSports = descDates.map(d => appState.days[d]).filter(r => r.sportLevel).slice(0, 4);
+      document.getElementById('recent-sport-entries').innerHTML = lastSports.length
+        ? lastSports.map(r => `
+            <li class="recent-row">
+              <span>${formatShortFr(r.date)}</span>
+              <span class="badge-color badge-${r.sportLevel}">${SPORT_META[r.sportLevel].short} — ${SPORT_META[r.sportLevel].desc}</span>
+            </li>
+          `).join('')
+        : '<li class="recent-row"><span style="color:#9CA3AF;">Aucune séance enregistrée.</span></li>';
+
+      const ascWeights = [...appState.weights].sort((a, b) => a.date.localeCompare(b.date));
+      const latestW = ascWeights.length ? ascWeights[ascWeights.length - 1].w : null;
+      document.getElementById('current-weight-pill').textContent =
+        latestW !== null ? `${fmtNum(latestW)} kg` : '-- kg';
+
+      const last4Weights = [];
+      for (let i = ascWeights.length - 1; i >= 0 && last4Weights.length < 4; i--) {
+        const cur = ascWeights[i];
+        const prev = i > 0 ? ascWeights[i - 1] : null;
+        const diff = prev ? Number((cur.w - prev.w).toFixed(1)) : null;
+        last4Weights.push({ date: cur.date, w: cur.w, diff });
+      }
+
+      document.getElementById('recent-weight-entries').innerHTML = last4Weights.length
+        ? last4Weights.map(item => {
+            let diffStr = '';
+            if (item.diff !== null) {
+              const sign = item.diff > 0 ? '+' : '';
+              const col = item.diff <= 0 ? '#38B27A' : '#F58A4B';
+              diffStr = `<span style="color:${col};font-weight:700;">(${sign}${fmtNum(item.diff)} kg)</span>`;
+            }
+            return `
+              <li class="recent-row">
+                <span>${formatShortFr(item.date)}</span>
+                <span><strong>${fmtNum(item.w)} kg</strong> ${diffStr}</span>
+              </li>
+            `;
+          }).join('')
+        : '<li class="recent-row"><span style="color:#9CA3AF;">Aucune pesée enregistrée.</span></li>';
+
+      renderRescueSection();
+    }
+
+    function renderResultsColumn() {
+      const stats = computeDashboardStats();
+
+      document.getElementById('adherence-pill').textContent = `Régularité 14 j : ${stats.valid14} / 14`;
+
+      document.getElementById('stat-frame-streak').textContent = `${stats.frameStreak} j`;
+      document.getElementById('stat-frame-record').textContent = `Record : ${stats.bestFrame} j (WE Jaune préservé)`;
+
+      document.getElementById('stat-alcohol-streak').textContent = `${stats.alcoholStreak} j`;
+      document.getElementById('stat-alcohol-record').textContent = `Record : ${stats.bestAlcohol} j`;
+
+      document.getElementById('stat-sport-week').textContent = `${stats.sportWeekCount} / 3`;
+
+      document.getElementById('goal-start-field').value = stats.startW;
+      document.getElementById('goal-target-field').value = stats.targetW;
+      document.getElementById('goals-pill').textContent =
+        `Départ ${fmtNum(stats.startW)} kg • Cible ${fmtNum(stats.targetW)} kg`;
+
+      const sign = stats.deltaFromStart > 0 ? '+' : '';
+      document.getElementById('stat-weight-delta').textContent = `${sign}${fmtNum(stats.deltaFromStart)} kg`;
+      document.getElementById('stat-weight-latest').textContent =
+        stats.weightSeries.length ? `Dernière pesée : ${fmtNum(stats.latestW)} kg` : 'Aucune pesée saisie';
+
+      document.getElementById('stat-weight-left').textContent =
+        stats.distanceLeft === 0 ? 'Objectif atteint' : `${fmtNum(stats.distanceLeft)} kg`;
+      document.getElementById('stat-weight-ma7').textContent =
+        stats.weightSeries.length ? `Moyenne lissée 7 j : ${fmtNum(stats.latestMa7, 2)} kg` : 'Moyenne lissée 7 j : --';
+
+      document.getElementById('progress-start-lbl').textContent = `Départ ${fmtNum(stats.startW)} kg`;
+      document.getElementById('progress-pct-lbl').textContent = `${stats.progressPct} % accompli`;
+      document.getElementById('progress-target-lbl').textContent = `Cible ${fmtNum(stats.targetW)} kg`;
+      document.getElementById('weight-progress-bar').style.width = `${stats.progressPct}%`;
+
+      renderWeightChartSvg(stats.weightSeries, stats.targetW);
+      renderCombined10DaysStrip();
+    }
+
+    function createSvgEl(tag, attrs) {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, String(v)));
+      return el;
+    }
+
+    function renderWeightChartSvg(series, targetWeight) {
+      const svg = document.getElementById('weight-svg');
+      svg.innerHTML = '';
+
+      const W = 760;
+      const H = 270;
+      const padL = 62;
+      const padR = 24;
+      const padT = 24;
+      const padB = 48;
+      const plotW = W - padL - padR;
+      const plotH = H - padT - padB;
+
+      if (!series.length) {
+        const msg = createSvgEl('text', {
+          x: W / 2,
+          y: H / 2,
+          'text-anchor': 'middle',
+          fill: '#9CA3AF',
+          'font-size': '17',
+          'font-weight': '600'
+        });
+        msg.textContent = 'Enregistre une première pesée pour afficher ta courbe.';
+        svg.appendChild(msg);
+        return;
+      }
+
+      const values = [
+        ...series.map(p => p.w),
+        ...series.map(p => p.ma7),
+        Number(targetWeight)
+      ];
+      const minV = Math.floor(Math.min(...values) - 0.5);
+      const maxV = Math.ceil(Math.max(...values) + 0.5);
+      const span = Math.max(1, maxV - minV);
+
+      const getX = idx => series.length === 1
+        ? padL + plotW / 2
+        : padL + (idx / (series.length - 1)) * plotW;
+      const getY = val => padT + ((maxV - val) / span) * plotH;
+
+      for (let g = 0; g <= 4; g++) {
+        const val = minV + (g / 4) * span;
+        const y = getY(val);
+        svg.appendChild(createSvgEl('line', {
+          x1: padL, y1: y, x2: W - padR, y2: y,
+          stroke: '#252932', 'stroke-width': '1.5'
+        }));
+        const lbl = createSvgEl('text', {
+          x: padL - 10, y: y + 5,
+          'text-anchor': 'end', fill: '#9CA3AF', 'font-size': '14', 'font-weight': '700'
+        });
+        lbl.textContent = fmtNum(val);
+        svg.appendChild(lbl);
+      }
+
+      const yTarget = getY(Number(targetWeight));
+      svg.appendChild(createSvgEl('line', {
+        x1: padL, y1: yTarget, x2: W - padR, y2: yTarget,
+        stroke: '#F2B844', 'stroke-width': '2.5', 'stroke-dasharray': '7 7'
+      }));
+      const targetTxt = createSvgEl('text', {
+        x: W - padR, y: Math.max(padT + 14, yTarget - 8),
+        'text-anchor': 'end', fill: '#F2B844', 'font-size': '14', 'font-weight': '800'
+      });
+      targetTxt.textContent = `Objectif ${fmtNum(targetWeight)} kg`;
+      svg.appendChild(targetTxt);
+
+      if (series.length >= 2) {
+        const dPath = series.map((pt, i) => `${i === 0 ? 'M' : 'L'} ${getX(i)} ${getY(pt.ma7)}`).join(' ');
+        svg.appendChild(createSvgEl('path', {
+          d: dPath,
+          fill: 'none',
+          stroke: '#4D8BFF',
+          'stroke-width': '4',
+          'stroke-linecap': 'round',
+          'stroke-linejoin': 'round'
+        }));
+      }
+
+      const step = Math.max(1, Math.ceil(series.length / 6));
+
+      series.forEach((pt, idx) => {
+        const cx = getX(idx);
+        const cyRaw = getY(pt.w);
+        const cyMa = getY(pt.ma7);
+
+        const rawDot = createSvgEl('circle', {
+          cx, cy: cyRaw, r: '5.5',
+          fill: '#F3F4F6', stroke: '#0F1014', 'stroke-width': '2',
+          style: 'cursor:pointer;'
+        });
+        rawDot.addEventListener('click', () => {
+          showToast(`${formatShortFr(pt.date)} : ${fmtNum(pt.w)} kg (moyenne 7 j : ${fmtNum(pt.ma7, 2)} kg)`);
+        });
+        svg.appendChild(rawDot);
+
+        const maDot = createSvgEl('circle', {
+          cx, cy: cyMa, r: '6',
+          fill: '#4D8BFF', stroke: '#0F1014', 'stroke-width': '2',
+          style: 'cursor:pointer;'
+        });
+        maDot.addEventListener('click', () => {
+          showToast(`${formatShortFr(pt.date)} : moyenne 7 j = ${fmtNum(pt.ma7, 2)} kg`);
+        });
+        svg.appendChild(maDot);
+
+        const dayRec = appState.days[pt.date];
+        if (isActiveSport(dayRec)) {
+          const bolt = createSvgEl('text', {
+            x: cx,
+            y: H - 24,
+            'text-anchor': 'middle',
+            fill: '#4D8BFF',
+            'font-size': '16',
+            'font-weight': '800'
+          });
+          bolt.textContent = '⚡';
+          svg.appendChild(bolt);
+        }
+
+        if (idx % step === 0 || idx === series.length - 1) {
+          const dateTxt = createSvgEl('text', {
+            x: cx,
+            y: H - 6,
+            'text-anchor': 'middle',
+            fill: '#9CA3AF',
+            'font-size': '14',
+            'font-weight': '600'
+          });
+          dateTxt.textContent = formatCompactFr(pt.date);
+          svg.appendChild(dateTxt);
+        }
+      });
+    }
+
+    function renderCombined10DaysStrip() {
+      const today = getTodayIso();
+      const strip = document.getElementById('combined-strip-10');
+      const weightByDate = {};
+      appState.weights.forEach(item => {
+        weightByDate[item.date] = item.w;
+      });
+
+      const tiles = [];
+      for (let i = -9; i <= 0; i++) {
+        const dIso = shiftIsoDate(today, i);
+        const rec = appState.days[dIso] || {};
+        const wVal = weightByDate[dIso];
+        const dayClass = rec.dayLevel ? `c-${rec.dayLevel}` : '';
+        const sportClass = rec.sportLevel ? `c-${rec.sportLevel}` : '';
+        const isToday = dIso === today;
+
+        tiles.push(`
+          <div class="day-tile ${isToday ? 'is-today' : ''}">
+            <span class="tile-date">${isToday ? "Auj." : formatCompactFr(dIso)}</span>
+            <div class="tile-dots" title="Gauche : Journée • Droite : Sport">
+              <span class="tile-dot ${dayClass}"></span>
+              <span class="tile-dot ${sportClass}"></span>
+            </div>
+            <span class="tile-weight">${wVal !== undefined ? fmtNum(wVal) + ' kg' : '—'}</span>
+          </div>
+        `);
+      }
+
+      strip.innerHTML = tiles.join('');
+    }
+
+    function renderAll() {
+      const today = getTodayIso();
+      document.getElementById('today-date-label').textContent = formatLongFr(today);
+      document.getElementById('demo-mode-badge').style.display = appState.isDemo ? 'inline-flex' : 'none';
+
+      renderSaisieColumn();
+      renderResultsColumn();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      renderAll();
+      restoreSavedFileHandleOnBoot();
+    });
+  </script>
+    <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js');
+    }
+  </script>
+</body>
+</html>
